@@ -36,29 +36,23 @@ huggingface-cli login   # for pushing/loading private datasets
 ### 1. Build and push the dataset
 
 ```bash
-python create_dataset.py --hf_repo YOUR_HF_USERNAME/robust-ocr-bench
+python create_dataset.py --hf_repo UlrickBL/robust-ocr-bench
 ```
 
 ### 2. Evaluate a model
 
 ```bash
 # Anthropic
-ANTHROPIC_API_KEY=sk-... python evaluate_models.py \
-  --dataset YOUR_HF_USERNAME/robust-ocr-bench \
-  --provider anthropic \
-  --model claude-sonnet-4-6
+ANTHROPIC_API_KEY=sk-... python evaluate_models.py --dataset UlrickBL/robust-ocr-bench --provider anthropic --model claude-sonnet-4-6
 
 # OpenAI
-OPENAI_API_KEY=sk-... python evaluate_models.py \
-  --dataset YOUR_HF_USERNAME/robust-ocr-bench \
-  --provider openai \
-  --model gpt-4o
+OPENAI_API_KEY=sk-... python evaluate_models.py --dataset UlrickBL/robust-ocr-bench --provider openai --model gpt-4o
+
+# Mistral
+MISTRAL_API_KEY=... python evaluate_models.py --dataset UlrickBL/robust-ocr-bench --provider mistral --model pixtral-12b-2409
 
 # Local (HuggingFace transformers)
-python evaluate_models.py \
-  --dataset YOUR_HF_USERNAME/robust-ocr-bench \
-  --provider local \
-  --model llava-hf/llava-1.5-7b-hf
+python evaluate_models.py --dataset UlrickBL/robust-ocr-bench --provider local --model llava-hf/llava-1.5-7b-hf
 ```
 
 Optional flags:

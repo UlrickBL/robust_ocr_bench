@@ -144,6 +144,31 @@ class OpenAIModel(BaseModel):
         return self._parse_json_response(response.choices[0].message.content or "")
 
 
+class MistralModel(BaseModel):
+    def __init__(self, model: str = "pixtral-12b-2409", max_tokens: int = 512):
+        from mistralai import Mistral
+        self.client = Mistral(api_key=os.environ.get("MISTRAL_API_KEY"))
+        self.model = model
+        self.max_tokens = max_tokens
+
+    def extract(self, image_data: Any) -> dict[str, str]:
+        b64 = image_to_base64(image_data)
+        response = self.client.chat.complete(
+            model=self.model,
+            max_tokens=self.max_tokens,
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}},
+                        {"type": "text", "text": EXTRACTION_PROMPT},
+                    ],
+                }
+            ],
+        )
+        return self._parse_json_response(response.choices[0].message.content or "")
+
+
 class LocalTransformersModel(BaseModel):
     def __init__(self, model_id: str, device: str = "auto", max_new_tokens: int = 512):
         from transformers import AutoProcessor, AutoModelForVision2Seq
@@ -194,6 +219,7 @@ class LocalTransformersModel(BaseModel):
 PROVIDERS = {
     "anthropic": AnthropicModel,
     "openai": OpenAIModel,
+    "mistral": MistralModel,
     "local": LocalTransformersModel,
 }
 
